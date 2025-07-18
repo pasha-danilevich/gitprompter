@@ -1,5 +1,5 @@
 import click
-from .core import create_diff_prompt, create_branch_diff_prompt
+from .core import create_diff_prompt, create_branch_diff_prompt, create_branch_commit_message
 
 @click.group()  # Делаем основную группу команд
 def cli():
@@ -18,7 +18,11 @@ def branch_diff(branch: str):
     """Генерирует промт для нейросети на основе git diff для всей ветки начиная от --branch (master по умолчанию)."""
     create_branch_diff_prompt(branch)
 
-
+@cli.command()
+@click.option("--branch", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
+def branch_comments(branch: str):
+    """Генерирует промт для нейросети на основе git diff для всей ветки начиная от --branch (master по умолчанию)."""
+    create_branch_commit_message(branch)
 
 
 if __name__ == "__main__":
