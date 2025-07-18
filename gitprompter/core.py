@@ -22,6 +22,16 @@ COMMIT_PROMPT = (
     "СВОЙ ОТВЕТ НАПИШИ В code формате на русском языке\n\n"
 )
 
+BRANCH_COMMIT_MESSAGE_PROMPT = (
+    "Задача:\n"
+    "Напиши комментарий к моему Pull Request используя следующую структуру:\n"
+    "{краткое название Pull Request, описывающее всю суть}\n"
+    "{символ каретки для отступа (enter)}\n"
+    "{пункты изменений (начинаются с дефиса)}\n"
+    "СВОЙ ОТВЕТ НАПИШИ В code формате на русском языке\n"
+    "Комментарии всех фиксаций в текущей ветке:\n\n"
+)
+
 
 def create_diff_prompt():
     # Получаем вывод git diff (универсальный способ для всех ОС)
@@ -33,11 +43,11 @@ def create_diff_prompt():
         logger.error(diff.stderr)
         return
     
-    diff_text = diff.stdout # TODO: написать функцию, которая уберет все мусор из diff
-    diff_cached_text = diff_cached.stdout
+    diff_text = utils.clean_git_diff(diff.stdout)
+    diff_cached_text = utils.clean_git_diff(diff_cached.stdout)
     
-    utils.log_diff_text_info(diff_text, 'git diff')
-    utils.log_diff_text_info(diff_cached_text, 'git diff --cached')
+    utils.log_text_info(diff_text, 'git diff')
+    utils.log_text_info(diff_cached_text, 'git diff --cached')
     
     full_text = (
             COMMIT_PROMPT + f'git diff --cached: {diff_cached_text}' + f'git diff: {diff_text}'
@@ -51,9 +61,13 @@ BRANCH_PROMPT = (
 def create_branch_diff_prompt(branch: str):
     param = f'{branch}...'
     diff = subprocess.run(['git', 'diff', param], **BASE_PARAMS)
+    if diff.returncode != 0 :
+        logger.debug(f'Пытаюсь выполнить git log {param}')
+        logger.error(diff.stderr)
+        return
     diff_text = diff.stdout
     
-    utils.log_diff_text_info(diff_text, f'git diff {param}')
+    utils.log_text_info(diff_text, f'git diff {param}')
     
     full_text = COMMIT_PROMPT + f'git diff {param}: {diff_text}'
     utils.copy_to_buffer(full_text)
@@ -63,10 +77,13 @@ def create_branch_commit_message(branch: str):
     current_branch = subprocess.run(['git', 'symbolic-ref', '--short', 'HEAD'], **BASE_PARAMS)
     current_branch_name = current_branch.stdout.strip()
     commit_range = f"{branch}..{current_branch_name}"
-    format_ = '--pretty=format:"%s"'
-    result = subprocess.run(['git', 'log', commit_range, format_], **BASE_PARAMS)
+    result = subprocess.run(['git', 'log', commit_range], **BASE_PARAMS)
     if result.returncode != 0 :
         logger.debug(f'Пытаюсь выполнить git log {commit_range}')
         logger.error(result.stderr)
         return
-    print(result.stdout)
+    
+    utils.log_text_info(result.stdout, f'git log {commit_range}')
+    
+    full_text = BRANCH_COMMIT_MESSAGE_PROMPT + f'git log {commit_range}: {result.stdout}'
+    utils.copy_to_buffer(full_text)

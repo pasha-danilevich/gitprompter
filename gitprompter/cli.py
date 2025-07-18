@@ -8,20 +8,20 @@ def cli():
 
 @cli.command()
 def diff():
-    """Генерирует промт для нейросети на основе git diff."""
+    """Промт на основе git diff."""
     create_diff_prompt()
 
 
 @cli.command()
 @click.option("--branch", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
 def branch_diff(branch: str):
-    """Генерирует промт для нейросети на основе git diff для всей ветки начиная от --branch (master по умолчанию)."""
+    """Промт для всей ветки."""
     create_branch_diff_prompt(branch)
 
 @cli.command()
 @click.option("--branch", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
 def branch_comments(branch: str):
-    """Генерирует промт для нейросети на основе git diff для всей ветки начиная от --branch (master по умолчанию)."""
+    """Промт из всех коммитов ветки."""
     create_branch_commit_message(branch)
 
 
