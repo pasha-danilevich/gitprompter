@@ -8,21 +8,21 @@ def cli():
 
 @cli.command()
 def diff():
-    """Промт на основе git diff."""
+    """Промт на основе git diff текущих изменений."""
     create_diff_prompt()
 
 
 @cli.command()
-@click.option("--branch", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
-def branch_diff(branch: str):
-    """Промт для всей ветки."""
-    create_branch_diff_prompt(branch)
+@click.option("--since", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
+def branch_diff(since: str):
+    """Промт на основе git diff всей ветки."""
+    create_branch_diff_prompt(since)
 
 @cli.command()
-@click.option("--branch", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
-def branch_comments(branch: str):
-    """Промт из всех коммитов ветки."""
-    create_branch_commit_message(branch)
+@click.option("--since", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
+def branch_comments(since: str):
+    """Промт из всех комментариев коммитов ветки."""
+    create_branch_commit_message(since)
 
 
 if __name__ == "__main__":

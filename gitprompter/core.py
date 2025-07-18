@@ -58,11 +58,11 @@ BRANCH_PROMPT = (
     "Задача:\n"
 )
 
-def create_branch_diff_prompt(branch: str):
-    param = f'{branch}...'
+def create_branch_diff_prompt(since: str):
+    param = f'{since}...'
     diff = subprocess.run(['git', 'diff', param], **BASE_PARAMS)
     if diff.returncode != 0 :
-        logger.debug(f'Пытаюсь выполнить git log {param}')
+        logger.debug(f'Пытаюсь выполнить git diff {param}')
         logger.error(diff.stderr)
         return
     diff_text = diff.stdout
@@ -73,10 +73,10 @@ def create_branch_diff_prompt(branch: str):
     utils.copy_to_buffer(full_text)
     
 
-def create_branch_commit_message(branch: str):
+def create_branch_commit_message(since: str):
     current_branch = subprocess.run(['git', 'symbolic-ref', '--short', 'HEAD'], **BASE_PARAMS)
     current_branch_name = current_branch.stdout.strip()
-    commit_range = f"{branch}..{current_branch_name}"
+    commit_range = f"{since}..{current_branch_name}"
     result = subprocess.run(['git', 'log', commit_range], **BASE_PARAMS)
     if result.returncode != 0 :
         logger.debug(f'Пытаюсь выполнить git log {commit_range}')
