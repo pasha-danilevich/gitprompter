@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from loguru import logger
+import click
 
 from gitprompter import utils
 
@@ -39,8 +39,8 @@ def create_diff_prompt():
     diff_cached = subprocess.run(['git', 'diff', '--cached'], **BASE_PARAMS)
     
     if diff.returncode != 0 or diff_cached.returncode != 0:
-        logger.error("Ошибка при выполнении git diff или git diff --cached:")
-        logger.error(diff.stderr)
+        click.secho("Ошибка при выполнении git diff или git diff --cached:", fg="red")
+        click.secho(diff.stderr, fg="red")
         return
     
     diff_text = utils.clean_git_diff(diff.stdout)
@@ -62,8 +62,8 @@ def create_branch_diff_prompt(since: str):
     param = f'{since}...'
     diff = subprocess.run(['git', 'diff', param], **BASE_PARAMS)
     if diff.returncode != 0 :
-        logger.debug(f'Пытаюсь выполнить git diff {param}')
-        logger.error(diff.stderr)
+        click.secho(f'Пытаюсь выполнить git diff {param}', fg="bright_cyan")
+        click.secho(diff.stderr, fg="red")
         return
     diff_text = diff.stdout
     
@@ -79,8 +79,8 @@ def create_branch_commit_message(since: str):
     commit_range = f"{since}..{current_branch_name}"
     result = subprocess.run(['git', 'log', commit_range], **BASE_PARAMS)
     if result.returncode != 0 :
-        logger.debug(f'Пытаюсь выполнить git log {commit_range}')
-        logger.error(result.stderr)
+        click.secho(f'Пытаюсь выполнить git log {commit_range}', fg="bright_cyan")
+        click.secho(result.stderr, fg="red")
         return
     
     utils.log_text_info(result.stdout, f'git log {commit_range}')

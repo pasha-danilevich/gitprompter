@@ -1,6 +1,6 @@
 [project]
 name = "gitprompter"
-version = "0.1.0"
+version = "0.1.1"
 description = "Генератор промтов для нейросетей на основе git diff."
 authors = [
     {name = "pasha_danilevich",email = "danilevitch.pasha@yandex.ru"}
@@ -12,7 +12,6 @@ requires-python = ">=3.10, <4.0"
 [tool.poetry.dependencies]
 click = "^8.2.1"
 pyperclip = "^1.9.0"
-loguru = "^0.7.3"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

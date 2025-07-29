@@ -1,16 +1,20 @@
 from pathlib import Path
 
+import click
 import pyperclip
-from loguru import logger
+
+
 
 
 def copy_to_buffer(text: str):
     # Копируем текст в буфер обмена
     try:
         pyperclip.copy(text)
-        logger.success(f"Промт успешно скопирован в буфер обмена!")
+        click.secho()
+        click.secho(f"Промт скопирован в буфер обмена!", fg="green", bold=True)
     except Exception as e:
-        logger.error(f"Не удалось скопировать текст в буфер обмена: {e}")
+        click.secho(f"Не удалось скопировать текст в буфер обмена: {e}", fg="red", bold=True)
+
         
 def write_to_txt(text: str):
     # Создаем путь к файлу (кросс-платформенный способ)
@@ -20,16 +24,16 @@ def write_to_txt(text: str):
     with open(path, 'w', encoding='utf-8') as f:
         f.write(text)
 
-    logger.success(f"Вывод git diff сохранён в {path}")
+    click.secho(f"Вывод git diff сохранён в {path}", fg="green", bold=True)
     
 def log_text_info(text: str, request: str):
     line_count = len(text.splitlines())  # Подсчет количества строк
     msg = f'Длина запроса "{request}": {len(text)} символов ({line_count} строк)' # посчитай кол-во строк
     
     if len(text) == 0:
-        logger.warning(msg)
+        click.secho(msg, fg="yellow")
     else:
-        logger.info(msg)
+        click.secho(msg, fg="white")
 
 def clean_git_diff(diff_text: str) -> str:
     """
