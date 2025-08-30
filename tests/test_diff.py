@@ -1,4 +1,4 @@
-"""gitprompter"""
+
 from gitprompter.config import GitPrompterConfig
 from gitprompter.core import GitDiffProcessor
 from gitprompter.prompts import Prompt
@@ -8,3 +8,6 @@ processor = GitDiffProcessor(
     config=config,
     prompt=Prompt(config)
 )
+
+def test_create_diff_prompt():
+    processor.create_diff_prompt()
