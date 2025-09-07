@@ -49,6 +49,20 @@ class GitDiffProcessor:
 
         return result.stdout
 
+    def _get_branch_range(self, since: str) -> str:
+        current_branch = self._run_git_command(
+            ['git', 'symbolic-ref', '--short', 'HEAD']
+        )
+
+        if current_branch is None:
+            raise ValueError('No current branch found.')
+
+        current_branch_name = current_branch.strip()
+        if since == current_branch_name:
+            return since
+        else:
+            return f"{since}..{current_branch_name}"
+
     def _process_prompt(self, diff_text: str, command: str) -> None:
         """
         Создает промпт на основе diff текста и копирует в буфер.
@@ -59,7 +73,12 @@ class GitDiffProcessor:
         """
         cleaned_text = utils.clean_git_diff(diff_text)
         utils.log_text_info(cleaned_text, command)
-        utils.copy_to_buffer(self.prompt.make(command, cleaned_text))
+        prompt = self.prompt.make(command, cleaned_text)
+        click.secho() # empty line
+        if self.config.to_file:
+            utils.write_to_txt(prompt)
+        else:
+            utils.copy_to_buffer(prompt)
 
     def create_diff_prompt(self) -> None:
         """
@@ -68,26 +87,13 @@ class GitDiffProcessor:
         Объединяет изменения в рабочей директории и индексированные изменения
         в единый промпт для коммита.
         """
-        diff = self._run_git_command(['git', 'diff'])
-        diff_cached = self._run_git_command(['git', 'diff', '--cached'])
+        result = self._run_git_command(['git', 'diff'])
+        result_cached = self._run_git_command(['git', 'diff', '--cached'])
 
-        if diff is None or diff_cached is None:
+        if result is None or result_cached is None:
             return
 
-        self._process_prompt(diff + diff_cached, 'git diff + git diff --cached')
-
-    def create_branch_diff_prompt(self, since: str) -> None:
-        """
-        Создает промпт на основе diff между текущей веткой и указанной точкой.
-
-        Args:
-            since: Имя ветки/тега/коммита для сравнения
-        """
-        param = f'{since}...'
-        diff = self._run_git_command(['git', 'diff', param])
-
-        if diff is not None:
-            self._process_prompt(diff, f'git diff {param}')
+        self._process_prompt(result + result_cached, 'git diff + git diff --cached')
 
     def create_branch_comments_prompt(self, since: str) -> None:
         """
@@ -96,23 +102,15 @@ class GitDiffProcessor:
         Args:
             since: Имя ветки/тега/коммита для сравнения истории
         """
-        current_branch = self._run_git_command(
-            ['git', 'symbolic-ref', '--short', 'HEAD']
+
+        command = ['git', 'log', self._get_branch_range(since)]
+
+        result = self._run_git_command(
+            command
         )
 
-        if current_branch is None:
-            return
-
-        current_branch_name = current_branch.strip()
-        commit_range = f"{since}..{current_branch_name}"
-
-        log = self._run_git_command(
-            ['git', 'log', commit_range],
-        )
-
-        if log is not None:
+        if result is not None:
             self._process_prompt(
-                log,
-                f'git log {commit_range}'
-
+                result,
+                ' '.join(command),
             )

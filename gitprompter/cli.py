@@ -15,12 +15,6 @@ def diff():
 
 @cli.command()
 @click.option("--since", default=config.default_branch, help='Просмотр изменений с момента ответвления от указанной ветки')
-def branch_diff(since: str):
-    """Промт на основе git diff всей ветки."""
-    processor.create_branch_diff_prompt(since)
-
-@cli.command()
-@click.option("--since", default=config.default_branch, help='Просмотр изменений с момента ответвления от указанной ветки')
 def branch_comments(since: str):
     """Промт из всех комментариев коммитов ветки."""
     processor.create_branch_comments_prompt(since)

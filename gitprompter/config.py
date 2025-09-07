@@ -8,7 +8,6 @@ class PyprojectTomlConfig:
 
     @classmethod
     def load_config(cls) -> None:
-        print('load_config')
 
         current_dir = Path.cwd()
         config_file = None

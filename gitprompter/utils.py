@@ -10,7 +10,6 @@ def copy_to_buffer(text: str):
     # Копируем текст в буфер обмена
     try:
         pyperclip.copy(text)
-        click.secho()
         click.secho(f"Промт скопирован в буфер обмена!", fg="green", bold=True)
     except Exception as e:
         click.secho(f"Не удалось скопировать текст в буфер обмена: {e}", fg="red", bold=True)
@@ -18,7 +17,7 @@ def copy_to_buffer(text: str):
         
 def write_to_txt(text: str):
     # Создаем путь к файлу (кросс-платформенный способ)
-    output_path = Path(__file__).resolve().parent / 'output'
+    output_path = Path(__file__).resolve().parent
     path = Path(output_path, "prompt.txt")
     # Записываем вывод в файл с явным указанием кодировки
     with open(path, 'w', encoding='utf-8') as f:
