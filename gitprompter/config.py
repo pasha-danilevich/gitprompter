@@ -44,4 +44,5 @@ class GitPrompterConfig(PyprojectTomlConfig):
     style: Literal["feature", "conventional"] = "conventional"
     to_file: bool = False
     language: str = "ru"
+    default_branch: str = "main"
 

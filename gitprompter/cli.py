@@ -1,5 +1,6 @@
 import click
-from gitprompter import processor
+from gitprompter import processor, config
+
 
 @click.group()  # Делаем основную группу команд
 def cli():
@@ -13,13 +14,13 @@ def diff():
 
 
 @cli.command()
-@click.option("--since", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
+@click.option("--since", default=config.default_branch, help='Просмотр изменений с момента ответвления от указанной ветки')
 def branch_diff(since: str):
     """Промт на основе git diff всей ветки."""
     processor.create_branch_diff_prompt(since)
 
 @cli.command()
-@click.option("--since", default="master", help='Просмотр изменений с момента ответвления от указанной ветки')
+@click.option("--since", default=config.default_branch, help='Просмотр изменений с момента ответвления от указанной ветки')
 def branch_comments(since: str):
     """Промт из всех комментариев коммитов ветки."""
     processor.create_branch_comments_prompt(since)

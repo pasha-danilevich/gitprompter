@@ -25,3 +25,4 @@ gitprompter = "gitprompter.cli:cli"  # Указываем группу кома�
 [tool.gitprompter]
 style = 'conventional'
 language = 'ru'
+default_branch = 'main'
