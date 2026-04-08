@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 import pyperclip
 
-
+from gitprompter import config
 
 
 def copy_to_buffer(text: str):
@@ -27,7 +27,7 @@ def write_to_txt(text: str):
     
 def log_text_info(text: str, request: str):
     line_count = len(text.splitlines())  # Подсчет количества строк
-    msg = f'Длина запроса "{request}": {len(text)} символов ({line_count} строк)' # посчитай кол-во строк
+    msg = f'Длина запроса "{request}": {len(text)} символов ({line_count} строк). Стиль сообщения: {config.style}' # посчитай кол-во строк
     
     if len(text) == 0:
         click.secho(msg, fg="yellow")
