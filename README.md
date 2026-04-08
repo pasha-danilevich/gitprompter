@@ -49,7 +49,6 @@ style = "conventional"
 to_file = false
 language = "ru"
 default_branch = "main"
-analysis = false
 ```
 
 ### Параметры
@@ -60,9 +59,7 @@ analysis = false
 | `to_file`        | Сохранять в файл вместо буфера. `bool`                        |
 | `language`       | Язык ответа LLM  (`ru`, `EN`, `Russian`, `FRANCH`, etc)       |
 | `default_branch` | Базовая ветка для сравнения (обычно `master` или `main`)      |
-| `analysis`       | LLM после создания commit message проанализирует код. `bool`  |
 
----
 
 ## 🧠 Как это работает
 

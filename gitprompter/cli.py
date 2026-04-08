@@ -15,7 +15,6 @@ def cli():
 )
 @click.option(
     "--analysis", "-a",
-    default=False,
     is_flag=True,
     help="Сказать LLM, чтобы проанализировала код и подсветила ошибки"
 )
