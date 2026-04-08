@@ -40,7 +40,7 @@ class GitPrompterConfig(PyprojectTomlConfig):
 
     name ='gitprompter'
 
-    style: Literal["feature", "conventional"] = "conventional"
+    style: Literal["feature", "conventional", "compact"] = "conventional"
     to_file: bool = False
     language: str = "ru"
     default_branch: str = "main"

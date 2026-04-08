@@ -27,6 +27,15 @@ class Prompt:
                     "- detailed description explains the changes and motivations\n"
                     "- footer may contain BREAKING CHANGE notes\n\n"
                 )
+            case "compact":
+                text = (
+                    "<type>[optional scope]: <very short summary>\n\n"
+                    "Rules:\n"
+                    "- Max 1 line\n"
+                    "- Max 10 words\n"
+                    "- No explanations\n"
+                    "- Be specific and concise\n"
+                )
             case 'custom':
                 raise NotImplementedError
             case _:

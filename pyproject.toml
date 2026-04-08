@@ -23,6 +23,6 @@ build-backend = "poetry.core.masonry.api"
 gitprompter = "gitprompter.cli:cli"  # Указываем группу команд, а не одну функцию
 
 [tool.gitprompter]
-style = 'conventional'
+style = 'compact'
 language = 'ru'
 default_branch = 'main'
