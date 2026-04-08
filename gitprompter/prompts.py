@@ -1,4 +1,4 @@
-from gitprompter import GitPrompterConfig
+from gitprompter.config import GitPrompterConfig
 
 FEATURE_STYLE = (
     "[a brief title summarizing the main idea]\n\n"
@@ -26,6 +26,7 @@ COMPACT_STYLE = (
     "- Be specific and concise\n"
 )
 
+WITH_ANALYSIS = "After the commit comment, analyze the code and highlight any potential issues."
 
 class Prompt:
     def __init__(self, config: GitPrompterConfig):
@@ -53,6 +54,7 @@ class Prompt:
             "Write a comment following this structure:",
             self._style_text(),
             self._answer_format(),
+            WITH_ANALYSIS if self.config.analysis else "",
             f'Result of the "{command}" command:',
             result
         ]

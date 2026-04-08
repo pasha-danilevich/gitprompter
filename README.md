@@ -2,7 +2,7 @@
 
 **GitPrompter** — это CLI-инструмент, который превращает `git diff` и историю коммитов в готовые промпты для генерации commit-сообщений через LLM.
 
-Он помогает автоматизировать написание осмысленных commit message в заданном стиле (например, *Conventional Commits*).
+Он помогает автоматизировать написание осмысленных commit message в заданном стиле (например, [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)).
 
 ---
 
@@ -11,10 +11,9 @@
 * Генерация промпта из:
 
   * текущих изменений (`git diff`)
-  * staged изменений (`git diff --cached`)
+  * анализ кода с помощью флага `-a`
   * истории коммитов ветки (`git log`)
 * Поддержка разных стилей:
-
   * `conventional` (по умолчанию)
   * `feature`
   * `compact`
@@ -50,16 +49,18 @@ style = "conventional"
 to_file = false
 language = "ru"
 default_branch = "main"
+analysis = false
 ```
 
 ### Параметры
 
 | Параметр         | Описание                                                      |
-| ---------------- |---------------------------------------------------------------|
+|------------------|---------------------------------------------------------------|
 | `style`          | Стиль commit-сообщения (`conventional`, `feature`, `compact`) |
-| `to_file`        | Сохранять в файл вместо буфера                                |
-| `language`       | Язык ответа LLM                                               |
-| `default_branch` | Базовая ветка для сравнения                                   |
+| `to_file`        | Сохранять в файл вместо буфера. `bool`                        |
+| `language`       | Язык ответа LLM  (`ru`, `EN`, `Russian`, `FRANCH`, etc)       |
+| `default_branch` | Базовая ветка для сравнения (обычно `master` или `main`)      |
+| `analysis`       | LLM после создания commit message проанализирует код. `bool`  |
 
 ---
 
@@ -88,10 +89,17 @@ gitprompter diff
 * генерирует промпт
 
 ---
+
 ### 1.1 Выбор стиля ответа
 
 ```bash
 gitprompter diff -s compact
+```
+
+или
+
+```bash
+gitprompter diff --style compact
 ```
 
 Возможные стили:
@@ -101,6 +109,20 @@ gitprompter diff -s compact
 * compact
 
 Как выглядят эти стили, вы можете посмотреть в gitprompter/prompts.py
+
+---
+
+### 1.2 Анализ кода
+
+```bash
+gitprompter diff -a
+```
+
+или
+
+```bash
+gitprompter diff --analysis
+```
 
 ---
 
@@ -179,15 +201,10 @@ Result of the "git diff + git diff --cached" command:
 ## 🔧 Программное использование
 
 ```python
-from gitprompter import processor
+from gitprompter import build_processor
 
+processor = build_processor(style='compact', analysis=True)
 processor.create_diff_prompt()
-```
-
-или:
-
-```python
-processor.create_branch_comments_prompt("develop")
 ```
 
 ---

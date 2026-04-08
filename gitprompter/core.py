@@ -4,7 +4,8 @@ from typing import Optional
 
 import click
 
-from gitprompter import utils, GitPrompterConfig
+from gitprompter import utils
+from gitprompter.config import GitPrompterConfig
 from gitprompter.prompts import Prompt
 
 
@@ -72,7 +73,7 @@ class GitDiffProcessor:
             command: Описание для логирования
         """
         cleaned_text = utils.clean_git_diff(diff_text)
-        utils.log_text_info(cleaned_text, command)
+        self.log_text_info(cleaned_text, command)
         prompt = self.prompt.make(command, cleaned_text)
         click.secho() # empty line
         if self.config.to_file:
@@ -114,3 +115,12 @@ class GitDiffProcessor:
                 result,
                 ' '.join(command),
             )
+
+    def log_text_info(self, text: str, request: str):
+        line_count = len(text.splitlines())  # Подсчет количества строк
+        msg = f'Длина запроса "{request}": {len(text)} символов ({line_count} строк). Стиль сообщения: {self.config.style}'
+
+        if len(text) == 0:
+            click.secho(msg, fg="yellow")
+        else:
+            click.secho(msg, fg="white")

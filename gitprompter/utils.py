@@ -3,8 +3,6 @@ from pathlib import Path
 import click
 import pyperclip
 
-from gitprompter import config
-
 
 def copy_to_buffer(text: str):
     # Копируем текст в буфер обмена
@@ -24,15 +22,7 @@ def write_to_txt(text: str):
         f.write(text)
 
     click.secho(f"Вывод git diff сохранён в {path}", fg="green", bold=True)
-    
-def log_text_info(text: str, request: str):
-    line_count = len(text.splitlines())  # Подсчет количества строк
-    msg = f'Длина запроса "{request}": {len(text)} символов ({line_count} строк). Стиль сообщения: {config.style}' # посчитай кол-во строк
-    
-    if len(text) == 0:
-        click.secho(msg, fg="yellow")
-    else:
-        click.secho(msg, fg="white")
+
 
 def clean_git_diff(diff_text: str) -> str:
     """

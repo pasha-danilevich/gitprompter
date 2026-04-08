@@ -1,5 +1,5 @@
 from dataclasses import dataclass, fields
-from typing import Literal, Self
+from typing import Literal, Optional
 from pathlib import Path
 import tomllib
 
@@ -7,7 +7,7 @@ class PyprojectTomlConfig:
     name: str
 
     @classmethod
-    def load_config(cls) -> None:
+    def load_config(cls) -> Optional[dict]:
 
         current_dir = Path.cwd()
         config_file = None
@@ -24,24 +24,29 @@ class PyprojectTomlConfig:
                     data = tomllib.load(f)
                 tool_config = data.get('tool', {}).get(cls.name, {})
 
-                # Программно установим значения атрибутов, если они есть в tool_config
-                for field in fields(cls):
-                    if field.name in tool_config:
-                        setattr(cls, field.name, tool_config[field.name])
-
+                return tool_config
             except (FileNotFoundError, tomllib.TOMLDecodeError, KeyError):
                 pass
+
+
+        return None
 
 
 @dataclass
 class GitPrompterConfig(PyprojectTomlConfig):
     def __init__(self):
-        self.load_config()
+        data = self.load_config()
 
-    name ='gitprompter'
+        if data:
+            for field in fields(self):
+                if field.name in data:
+                    setattr(self, field.name, data[field.name])
+
+    name = 'gitprompter'
 
     style: Literal["feature", "conventional", "compact"] = "conventional"
     to_file: bool = False
     language: str = "ru"
     default_branch: str = "main"
+    analysis: bool = False
 
